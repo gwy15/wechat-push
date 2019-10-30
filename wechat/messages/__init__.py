@@ -1,0 +1,1 @@
+from .template_message import WechatTemplateMessageClient
