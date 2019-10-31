@@ -5,6 +5,8 @@
 npm install
 ```
 
++ edit `./.env` to follow your server side settings.
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
