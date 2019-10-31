@@ -25,6 +25,7 @@ export default {
     };
   },
   created: function() {
+    document.title = "详情";
     const locale =
       window.navigator.userLanguage || window.navigator.language || "zh-CN";
     moment.locale(locale);
@@ -66,6 +67,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+div.detail-page {
+  max-width: 600px;
+  margin: auto;
+}
+
 p#created-time {
   text-align: right;
   margin-right: 10pt;
