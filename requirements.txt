@@ -1,3 +1,5 @@
 aiohttp
 python-dotenv
 gunicorn
+
+sqlalchemy

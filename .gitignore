@@ -1,5 +1,9 @@
 venv
 __pycache__
+*.sqlite3
+*.sqlite
+*.db
+
 # development
 .vscode
 # production

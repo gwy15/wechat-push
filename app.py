@@ -1,6 +1,8 @@
 import os
 import argparse
 from typing import Optional
+import uuid
+import time
 
 import dotenv
 from aiohttp import web
@@ -8,6 +10,19 @@ from aiohttp import web
 from wechat.core import TokenManager
 from wechat.messages import WechatTemplateMessageClient
 from wechat.exceptions import WechatRequestError
+import models
+
+
+def getIPFromRequest(request):
+    ip = request.headers.get('X-Real-IP', None) or \
+        request.headers.get('X-Forwarded-For', None)
+    if ip is None:
+        peername = request.transport.get_extra_info('peername')
+        if peername is not None:
+            ip, _ = peername
+        else:
+            ip = ''
+    return ip
 
 
 async def messageHandler(request):
@@ -38,16 +53,40 @@ async def messageHandler(request):
         'title': {'value': title},
         'body': {'value': body}
     }
+    token = uuid.uuid4().hex
+    detailUrl = config['wechatMessageViewUrl'] + '?token=' + token
 
+    # send
     try:
         client = WechatTemplateMessageClient(manager)
-        response = await client.sendTemplateMessage(receiver, templateID, postData, url)
+        response = await client.sendTemplateMessage(receiver, templateID, postData, detailUrl)
+        response['token'] = token
     except WechatRequestError as ex:
         response = {
             'errcode': ex.errCode,
             'errmsg': str(ex)
         }
 
+    # insert into db
+    message = models.Message(
+        id=token,
+        app_id=config['appID'],
+        template_id=templateID,
+        receiver_id=receiver,
+        created_time=time.time(),
+        ip=getIPFromRequest(request),
+        UA=request.headers.get('User-Agent', ''),
+        errcode=response['errcode'],
+        msgid=response.get('msgid', 0),
+        title=title,
+        body=body,
+        url=url
+    )
+    session = config['session']
+    session.add(message)
+    session.commit()
+
+    # return response
     return web.json_response(response)
 
 
@@ -68,13 +107,23 @@ def createApp():
     urlRoot = os.environ.get('urlRoot', '/')
     if not (urlRoot.startswith('/') and urlRoot.endswith('/')):
         raise ValueError('urlRoot must starts and ends with a slash (/).')
+    wechatMessageViewUrl = os.environ.get('wechatMessageViewUrl', None)
+    if wechatMessageViewUrl is None:
+        raise ValueError(
+            'wechatMessageViewUrl must be set to enable detail page.')
 
     # create app
     app = web.Application()
     app.add_routes([web.post(urlRoot + 'message', messageHandler)])
     # initiate token manager
     manager = TokenManager(appID, appSecret)
-    app['config'] = {'tokenManager': manager}
+    session = models.initDB(os.environ['dbUrl'])
+    app['config'] = {
+        'appID': appID,
+        'wechatMessageViewUrl': wechatMessageViewUrl,
+        'tokenManager': manager,
+        'session': session,
+    }
     return app
 
 
