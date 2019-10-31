@@ -3,6 +3,10 @@
     <h2>{{ title }}</h2>
     <p id="created-time">{{ createdTime.fromNow() }}</p>
     <vue-markdown id="body" :source="body"></vue-markdown>
+
+    <div v-if="url" id="url">
+      <a :href="url">查看链接</a>
+    </div>
   </div>
 </template>
 
@@ -70,14 +74,17 @@ export default {
 div.detail-page {
   max-width: 600px;
   margin: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 p#created-time {
   text-align: right;
-  margin-right: 10pt;
 }
 #body {
   text-align: left;
-  margin: 15px;
+}
+div#url {
+  text-align: left;
 }
 </style>
