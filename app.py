@@ -3,6 +3,7 @@ import argparse
 from typing import Optional
 import uuid
 import time
+from urllib.parse import urlparse
 
 import dotenv
 from aiohttp import web
@@ -121,7 +122,10 @@ async def getMessageDetailHandler(request):
                 'url': message.url
             }
         }
-    return web.json_response(response)
+    headers = {
+        'Access-Control-Allow-Origin': config['allowedDomains']
+    }
+    return web.json_response(response, headers=headers)
 
 
 def createApp():
@@ -136,6 +140,9 @@ def createApp():
     if wechatMessageViewUrl is None:
         raise ValueError(
             'wechatMessageViewUrl must be set to enable detail page.')
+    parseResult = urlparse(wechatMessageViewUrl)
+    allowedDomains = '{}://{}'.format(
+        parseResult.scheme, parseResult.netloc)
 
     # create app
     app = web.Application()
@@ -151,6 +158,7 @@ def createApp():
         'wechatMessageViewUrl': wechatMessageViewUrl,
         'tokenManager': manager,
         'session': session,
+        'allowedDomains': allowedDomains
     }
     return app
 

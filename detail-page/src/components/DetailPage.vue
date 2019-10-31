@@ -1,8 +1,8 @@
 <template>
   <div class="detail-page">
     <h2>{{ title }}</h2>
-    <p>{{ createdTime.fromNow() }}</p>
-    <vue-markdown :source="body"></vue-markdown>
+    <p id="created-time">{{ createdTime.fromNow() }}</p>
+    <vue-markdown id="body" :source="body"></vue-markdown>
   </div>
 </template>
 
@@ -20,17 +20,16 @@ export default {
     return {
       title: "Loading",
       body: "loading data from server...",
-      createdTime: moment()
+      createdTime: moment(),
+      url: null
     };
   },
   created: function() {
     const locale =
       window.navigator.userLanguage || window.navigator.language || "zh-CN";
-    console.log("Use locale: " + locale);
     moment.locale(locale);
   },
   mounted: function() {
-    console.log("mounted");
     const app = this;
     // parse url param
     const urlParams = new URLSearchParams(window.location.search);
@@ -41,38 +40,38 @@ export default {
       return;
     }
     // api request
-    const apiUrl = process.env.VUE_APP_DETAIL_URL + "?token=" + token;
+    const apiUrl = process.env.VUE_APP_MESSAGE_URL + "/" + token;
     axios
       .get(apiUrl)
       .then(function(response) {
-        app.title = response.title;
-        app.body = response.body;
-        app.createdTime = moment.unix(response.createdTime); // TODO:
+        const resp = response.data;
+        if (resp.success) {
+          const data = resp.data;
+          app.title = data.title;
+          app.body = data.body;
+          app.createdTime = moment.unix(data.created_time);
+          app.url = data.url;
+        } else {
+          app.title = "Request failed.";
+          app.body = resp.msg;
+        }
       })
-      .catch(function(err) {
-        console.log(err);
+      .catch(function() {
         app.title = "Request failed.";
         app.body = "Your network request has failed.";
       });
-    console.log("app created");
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+p#created-time {
+  text-align: right;
+  margin-right: 10pt;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+#body {
+  text-align: left;
+  margin: 15px;
 }
 </style>
