@@ -2,7 +2,7 @@
   <div class="detail-page">
     <h2>{{ title }}</h2>
     <p id="created-time">{{ createdTime.fromNow() }}</p>
-    <vue-markdown id="body" :source="body"></vue-markdown>
+    <div id="body" v-html="compiledMarkdown"></div>
 
     <div v-if="url" id="url">
       <a :href="url">查看链接</a>
@@ -12,13 +12,13 @@
 
 <script>
 import axios from "axios";
-import VueMarkdown from "vue-markdown";
-import moment from "moment/locale/zh-cn";
+import marked from "marked";
+import moment from "moment";
 
 export default {
   name: "DetailPage",
   components: {
-    VueMarkdown
+    // VueMarkdown
   },
   data: function() {
     return {
@@ -65,6 +65,11 @@ export default {
         app.title = "Request failed.";
         app.body = "Your network request has failed.";
       });
+  },
+  computed: {
+    compiledMarkdown: function() {
+      return marked(this.body);
+    }
   }
 };
 </script>

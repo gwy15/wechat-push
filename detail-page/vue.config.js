@@ -1,11 +1,11 @@
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 
 module.exports = {
-    configureWebpack: {
-        plugins: [
-            new MomentLocalesPlugin({
-                localesToKeep: ['zh-CN'],
-            }),
-        ],
-    }
+  configureWebpack: {
+    plugins: [
+      new MomentLocalesPlugin({
+        localesToKeep: ["zh-CN"]
+      })
+    ]
+  }
 };
