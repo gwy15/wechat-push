@@ -25,7 +25,7 @@ def getIPFromRequest(request):
     return ip
 
 
-async def messageHandler(request):
+async def postMessageHandler(request):
     config = request.app['config']
     manager = config['tokenManager']
 
@@ -99,6 +99,31 @@ async def getDefaultTemplateID(tokenManager: TokenManager) -> Optional[str]:
         return templateList[0]['template_id']
 
 
+async def getMessageDetailHandler(request):
+    config = request.app['config']
+    token = request.match_info['token']
+    message: models.Message
+    message = config['session'].query(
+        models.Message).filter_by(id=token).one_or_none()
+    if message is None:
+        response = {
+            'success': False,
+            'msg': 'No records were found for this token.'
+        }
+    else:
+        response = {
+            'success': True,
+            'msg': 'Success',
+            'data': {
+                'title': message.title,
+                'body': message.body,
+                'created_time': message.created_time,
+                'url': message.url
+            }
+        }
+    return web.json_response(response)
+
+
 def createApp():
     # load env
     dotenv.load_dotenv(dotenv.find_dotenv())
@@ -114,7 +139,10 @@ def createApp():
 
     # create app
     app = web.Application()
-    app.add_routes([web.post(urlRoot + 'message', messageHandler)])
+    app.add_routes([
+        web.post(urlRoot + 'message', postMessageHandler),
+        web.get(urlRoot + 'message/{token}', getMessageDetailHandler),
+    ])
     # initiate token manager
     manager = TokenManager(appID, appSecret)
     session = models.initDB(os.environ['dbUrl'])
