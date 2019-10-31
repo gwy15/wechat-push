@@ -1,3 +1,6 @@
+venv
 __pycache__
-
-
+# development
+.vscode
+# production
+.env

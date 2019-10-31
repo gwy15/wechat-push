@@ -1,11 +1,12 @@
 import asyncio
-import aiohttp
 import random
 import string
 import json
 from pathlib import Path
 from typing import Optional, Union
 import time
+
+import aiohttp
 
 from wechat.exceptions import WechatRequestError
 
