@@ -1,5 +1,6 @@
 import asyncio
 import aiohttp
+from typing import List
 
 from wechat.core import BaseRequest
 
@@ -16,3 +17,8 @@ class WechatTemplateMessageClient(BaseRequest):
             templateData['url'] = url
         response = await self.postRequest(apiUrl, templateData)
         return response
+
+    async def getTemplateList(self):
+        url = 'https://api.weixin.qq.com/cgi-bin/template/get_all_private_template'
+        data = await self.getRequest(url)
+        return data['template_list']
