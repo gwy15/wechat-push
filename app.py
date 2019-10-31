@@ -162,6 +162,8 @@ def createApp():
     }
     return app
 
+async def asyncApp():
+    return createApp()
 
 def runDirectly():
     parser = argparse.ArgumentParser(description="Wechat message pusher")

@@ -34,7 +34,7 @@ First deploy python service
 
 For *nix users, nginx + gunicorn is recommended. But you're free to deploy using the same way under Windows as mentioned later.
 ```
-$ gunicorn app:app --worker-class aiohttp.GunicornWebWorker --bind /tmp/wechat-push.sock
+$ gunicorn app:asyncApp --worker-class aiohttp.GunicornWebWorker --bind /tmp/wechat-push.sock
 ```
 
 Setup nginx: see config/your-site.conf
