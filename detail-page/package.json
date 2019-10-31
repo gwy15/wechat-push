@@ -26,7 +26,6 @@
     "eslint-plugin-vue": "^5.0.0",
     "moment-locales-webpack-plugin": "^1.1.0",
     "prettier": "^1.18.2",
-    "vue-cli-plugin-webpack-bundle-analyzer": "^1.4.0",
     "vue-template-compiler": "^2.6.10"
   }
 }
