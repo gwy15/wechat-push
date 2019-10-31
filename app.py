@@ -36,7 +36,7 @@ async def messageHandler(request):
     # build post data
     postData = {
         'title': {'value': title},
-        'body': {'body': body}
+        'body': {'value': body}
     }
 
     try:
