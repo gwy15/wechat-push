@@ -13,7 +13,7 @@
 <script>
 import axios from "axios";
 import VueMarkdown from "vue-markdown";
-import moment from "moment";
+import moment from "moment/locale/zh-cn";
 
 export default {
   name: "DetailPage",
