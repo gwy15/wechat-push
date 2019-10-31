@@ -17,9 +17,6 @@ import moment from "moment";
 
 export default {
   name: "DetailPage",
-  components: {
-    // VueMarkdown
-  },
   data: function() {
     return {
       title: "Loading",
