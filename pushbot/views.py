@@ -171,6 +171,7 @@ class Scene:
                 'ticket': ticket,
                 'expire_at': time.time() + data['expire_seconds'],
                 'QRUrl': QRUrl,
+                'decodedUrl': data['url']
             }
         })
 
