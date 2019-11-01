@@ -1,9 +1,23 @@
+import os
+import json
+import logging.config
+from urllib.parse import urlparse
+
+import dotenv
 from aiohttp import web
 import redis
 
+from wechat.core import TokenManager
 from pushbot import models
 from pushbot import views
-from pushbot import log
+
+def initLogger():
+    configfile = os.environ.get('LOGGING_CONFIG', 'logging.json')
+    if os.path.exists(configfile):
+        with open(configfile) as f:
+            config = json.load(f)
+        logging.config.dictConfig(config)
+
 
 def routes(urlRoot):
     return [
@@ -20,13 +34,11 @@ def routes(urlRoot):
 
 
 def createApp():
-    import os
-    import dotenv
-    from urllib.parse import urlparse
-    from wechat.core import TokenManager
-
     # load env
     dotenv.load_dotenv(dotenv.find_dotenv())
+    # init log
+    initLogger()
+
     APP_ID = os.environ['APP_ID']
     APP_SECRET = os.environ['APP_SECRET']
     # load url root
