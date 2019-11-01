@@ -2,6 +2,7 @@ import time
 from typing import Optional, Union
 import uuid
 import random
+from xml.etree import ElementTree
 
 from aiohttp import web
 
@@ -97,21 +98,18 @@ class Message:
         message = config['session'].query(
             models.Message).filter_by(id=token).one_or_none()
         if message is None:
-            response = {
-                'success': False,
-                'msg': 'No records were found for this token.'
+            raise web.HTTPNotFound(
+                reason='No records were found for this token.')
+        response = {
+            'success': True,
+            'msg': 'Success',
+            'data': {
+                'title': message.title,
+                'body': message.body,
+                'created_time': message.created_time,
+                'url': message.url
             }
-        else:
-            response = {
-                'success': True,
-                'msg': 'Success',
-                'data': {
-                    'title': message.title,
-                    'body': message.body,
-                    'created_time': message.created_time,
-                    'url': message.url
-                }
-            }
+        }
         return web.json_response(response, headers=headers)
 
 
@@ -168,4 +166,31 @@ class Callback:
             request (web.Request): [description]
         """
         body = await request.read()
+        tree = ElementTree.fromstring(body.decode())
+        afunc = {
+            'event': Callback.handleEvent
+        }.get(tree.find('MsgType').text.strip(), Callback.defaultHandler)
+        response = await afunc(tree)
+
         return web.Response(text='')
+
+    @staticmethod
+    async def defaultHandler(tree: ElementTree.Element):
+        pass
+
+    @staticmethod
+    async def handleEvent(tree: ElementTree.Element):
+        openID = tree.find('FromUserName').text.strip()
+        eventName = tree.find('Event').text.strip().lower()
+        if eventName == 'subscribe':
+            eventKey = tree.find('EventKey')
+            if eventKey is None:
+                return
+            scene_id = int(eventKey.text.strip()[len('qrscene_'):])
+            # add to redis
+        elif eventName == 'scan':
+            scene_id = int(tree.find('EventKey').text.strip())
+            # add to redis
+        elif eventName == 'unsubscribe':
+            # remove from redis
+            pass
