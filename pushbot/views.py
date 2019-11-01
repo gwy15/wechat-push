@@ -1,12 +1,9 @@
 import time
 from typing import Optional, Union
-
-from aiohttp import web
 import uuid
 import random
 
-from aiohttp.web_request import FileField
-from multidict import MultiDictProxy
+from aiohttp import web
 
 from pushbot.utils import getIPFromRequest
 from wechat.messages import WechatTemplateMessageClient
@@ -158,11 +155,17 @@ class Scene:
 
 class Callback:
     @staticmethod
+    @utils.verifyFromWechatCallback
+    async def get(request: web.Request):
+        return web.Response(text=request.rel_url.query['echostr'])
+
+    @staticmethod
+    @utils.verifyFromWechatCallback
     async def post(request: web.Request):
         """Callback from wechat
 
         Args:
             request (web.Request): [description]
         """
-        data = await post.data()
-        # TODO:
+        body = await request.read()
+        return web.Response(text='')

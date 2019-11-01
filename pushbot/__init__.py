@@ -13,6 +13,7 @@ def routes(urlRoot):
         web.post(urlRoot + 'scene', views.Scene.post),
         web.get(urlRoot + 'scene/{scene_id}', views.Scene.get),
         # callback from wechat
+        web.get(urlRoot + 'callback', views.Callback.get),
         web.post(urlRoot + 'callback', views.Callback.post),
     ]
 
@@ -37,6 +38,9 @@ def createApp():
     parseResult = urlparse(wechatMessageViewUrl)
     allowedDomains = '{}://{}'.format(
         parseResult.scheme, parseResult.netloc)
+    wechatToken = os.environ.get('wechatToken', None)
+    if wechatToken is None:
+        raise ValueError('wechatToken must be set to verify wechat callback.')
 
     # create app
     app = web.Application()
@@ -46,6 +50,7 @@ def createApp():
     session = models.initDB(os.environ['dbUrl'])
     app['config'] = {
         'appID': appID,
+        'wechatToken': wechatToken,
         'wechatMessageViewUrl': wechatMessageViewUrl,
         'tokenManager': manager,
         'session': session,

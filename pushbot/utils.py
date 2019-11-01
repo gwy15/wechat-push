@@ -1,5 +1,7 @@
 from typing import Optional
 import functools
+import hashlib
+
 from aiohttp import web
 
 from wechat.core import TokenManager
@@ -35,7 +37,18 @@ async def getDefaultTemplateID(tokenManager: TokenManager) -> Optional[str]:
     else:
         return templateList[0]['template_id']
 
+async def verifyRequest(request: web.Request):
+    signature = request.rel_url.query.get('signature', None)
+    timestamp = request.rel_url.query.get('timestamp', None)
+    nonce = request.rel_url.query.get('nonce', None)
+    if not (signature and timestamp and nonce):
+        raise web.HTTPUnauthorized(reason='must be signatured.')
+    token = request.app['config']['wechatToken']
+    raw = ''.join(sorted([token, timestamp, nonce])).encode()
+    if signature != hashlib.sha1(raw).hexdigest():
+        raise web.HTTPUnauthorized(reason='bad signature.')
 
+# wrappers
 def catchWechatError(afunc):
     @functools.wraps(afunc)
     async def wrapper(*args, **kws):
@@ -59,4 +72,11 @@ def allowCORS(afunc):
         response = await afunc(request, *args, **kws)
         response.headers['Access-Control-Allow-Origin'] = config['allowedDomains']
         return response
+    return wrapper
+
+def verifyFromWechatCallback(afunc):
+    @functools.wraps(afunc)
+    async def wrapper(request):
+        await verifyRequest(request)
+        return await afunc(request)
     return wrapper
