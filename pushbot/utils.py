@@ -1,7 +1,10 @@
 from typing import Optional
+import functools
+from aiohttp import web
 
 from wechat.core import TokenManager
 from wechat.messages import WechatTemplateMessageClient
+from wechat.exceptions import WechatRequestError
 
 
 def getIPFromRequest(request):
@@ -14,7 +17,7 @@ def getIPFromRequest(request):
 
     """
     ip = request.headers.get('X-Real-IP', None) or \
-         request.headers.get('X-Forwarded-For', None)
+        request.headers.get('X-Forwarded-For', None)
     if ip is None:
         peername = request.transport.get_extra_info('peername')
         if peername is not None:
@@ -31,3 +34,29 @@ async def getDefaultTemplateID(tokenManager: TokenManager) -> Optional[str]:
         return None
     else:
         return templateList[0]['template_id']
+
+
+def catchWechatError(afunc):
+    @functools.wraps(afunc)
+    async def wrapper(*args, **kws):
+        try:
+            response = await afunc(*args, **kws)
+            return response
+        except WechatRequestError as ex:
+            data = {
+                'success': False,
+                'msg': 'WechatRequestError: ' + str(ex)
+            }
+            return web.json_response(data)
+
+        return res
+    return wrapper
+
+def allowCORS(afunc):
+    @functools.wraps(afunc)
+    async def wrapper(request, *args, **kws):
+        config = request.app['config']
+        response = await afunc(request, *args, **kws)
+        response.headers['Access-Control-Allow-Origin'] = config['allowedDomains']
+        return response
+    return wrapper

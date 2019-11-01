@@ -4,6 +4,19 @@ from pushbot import models
 from pushbot import views
 
 
+def routes(urlRoot):
+    return [
+        # messages
+        web.post(urlRoot + 'message', views.Message.post),
+        web.get(urlRoot + 'message/{token}', views.Message.get),
+        # scene (scan for receiver id)
+        web.post(urlRoot + 'scene', views.Scene.post),
+        web.get(urlRoot + 'scene/{scene_id}', views.Scene.get),
+        # callback from wechat
+        web.post(urlRoot + 'callback', views.Callback.post),
+    ]
+
+
 def createApp():
     import os
     import dotenv
@@ -27,10 +40,7 @@ def createApp():
 
     # create app
     app = web.Application()
-    app.add_routes([
-        web.post(urlRoot + 'message', views.Message.post),
-        web.get(urlRoot + 'message/{token}', views.Message.get),
-    ])
+    app.add_routes(routes(urlRoot))
     # initiate token manager
     manager = TokenManager(appID, appSecret)
     session = models.initDB(os.environ['dbUrl'])
