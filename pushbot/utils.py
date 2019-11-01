@@ -43,7 +43,7 @@ async def verifyRequest(request: web.Request):
     nonce = request.rel_url.query.get('nonce', None)
     if not (signature and timestamp and nonce):
         raise web.HTTPUnauthorized(reason='must be signatured.')
-    token = request.app['config']['wechatToken']
+    token = request.app['config']['WECHAT_TOKEN']
     raw = ''.join(sorted([token, timestamp, nonce])).encode()
     if signature != hashlib.sha1(raw).hexdigest():
         raise web.HTTPUnauthorized(reason='bad signature.')

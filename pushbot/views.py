@@ -3,6 +3,7 @@ from typing import Optional, Union
 import uuid
 import random
 from xml.etree import ElementTree
+import redis
 
 from aiohttp import web
 
@@ -14,6 +15,28 @@ from pushbot import models
 
 
 class Message:
+    EXPIRES_IN = 60*60
+
+    @staticmethod
+    def _token2RedisName(token):
+        return 'message:{}'.format(token)
+
+    @staticmethod
+    def _simplifiedMessage(message: models.Message):
+        return {
+            'title': message.title,
+            'body': message.body,
+            'created_time': message.created_time,
+            'url': message.url
+        }
+
+    @staticmethod
+    def _save2Redis(r: redis.Redis, message: models.Message):
+        redisName = Message._token2RedisName(message.id)
+        mapping = Message._simplifiedMessage(message)
+        r.hmset(redisName, mapping)
+        r.expire(redisName, Message.EXPIRES_IN)  # expires
+
     @staticmethod
     @utils.catchWechatError
     async def post(request: web.Request):
@@ -31,15 +54,14 @@ class Message:
         data = await request.post()
         # get template ID
         templateID: Optional[str]
-        templateID = data.get('templateID', default=None)
-        if templateID is None:  # get default template ID
-            templateID = config.get('defaultTemplateID', None)
-            if templateID is None:  # default template ID not set
-                templateID = await utils.getDefaultTemplateID(manager)
-                if templateID is None:  # still fails
-                    raise web.HTTPBadRequest(
-                        reason='No template id param was found.')
-                config['defaultTemplateID'] = templateID
+        templateID = data.get('templateID', None) or \
+            config.get('defaultTemplateID', None)
+        if templateID is None:  # default template ID not set
+            templateID = await utils.getDefaultTemplateID(manager)
+            if templateID is None:  # still fails
+                raise web.HTTPBadRequest(
+                    reason='No template id param was found.')
+            config['defaultTemplateID'] = templateID
         # parse arguments
         receiver = data.get('receiver', None)
         if receiver is None:
@@ -47,8 +69,10 @@ class Message:
         title = data.get('title', None)
         if title is None:
             raise web.HTTPBadRequest(reason='must provide title')
+        # optional
         body = data.get('body', '')
-        url = data.get('url', None)
+        url = data.get('url', '')
+        created_time = time.time()
         # build post data
         postData = {
             'title': {'value': title},
@@ -67,13 +91,13 @@ class Message:
             'data': responseData
         }
 
-        # insert into db
+        # insert into SQL db
         message = models.Message(
             id=token,
-            app_id=config['appID'],
+            app_id=config['APP_ID'],
             template_id=templateID,
             receiver_id=receiver,
-            created_time=time.time(),
+            created_time=created_time,
             ip=getIPFromRequest(request),
             UA=request.headers.get('User-Agent', ''),
             errcode=responseData['errcode'],
@@ -86,6 +110,9 @@ class Message:
         session.add(message)
         session.commit()
 
+        # insert into redis
+        Message._save2Redis(config['redis'], message)
+
         # return response
         return web.json_response(response)
 
@@ -94,23 +121,28 @@ class Message:
     async def get(request: web.Request):
         config = request.app['config']
         token = request.match_info['token']
-        message: models.Message
-        message = config['session'].query(
-            models.Message).filter_by(id=token).one_or_none()
-        if message is None:
-            raise web.HTTPNotFound(
-                reason='No records were found for this token.')
+        # query from redis
+        r: redis.Redis = config['redis']
+        redisName = Message._token2RedisName(token)
+        data = r.hgetall(redisName)
+        # if fails, retrieve from SQL db
+        if len(data) == 0:
+            message: models.Message
+            message = config['session'].query(
+                models.Message).filter_by(id=token).one_or_none()
+            if message is None:
+                raise web.HTTPNotFound(
+                    reason='No records were found for this token.')
+            # save to redis
+            Message._save2Redis(config['redis'], message)
+            data = Message._simplifiedMessage(message)
+        # build reponse
         response = {
             'success': True,
             'msg': 'Success',
-            'data': {
-                'title': message.title,
-                'body': message.body,
-                'created_time': message.created_time,
-                'url': message.url
-            }
+            'data': data
         }
-        return web.json_response(response, headers=headers)
+        return web.json_response(response)
 
 
 class Scene:
