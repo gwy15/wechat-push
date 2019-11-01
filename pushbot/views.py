@@ -79,7 +79,7 @@ class Message:
             'body': {'value': body}
         }
         token = uuid.uuid4().hex
-        detailUrl = config['wechatMessageViewUrl'] + '?token=' + token
+        detailUrl = config['DETAIL_BASE_URL'] + '?token=' + token
 
         # send
         client = WechatTemplateMessageClient(manager)

@@ -70,7 +70,7 @@ def allowCORS(afunc):
     async def wrapper(request, *args, **kws):
         config = request.app['config']
         response = await afunc(request, *args, **kws)
-        response.headers['Access-Control-Allow-Origin'] = config['allowedDomains']
+        response.headers['Access-Control-Allow-Origin'] = config['ALLOWED_DOMAINS']
         return response
     return wrapper
 

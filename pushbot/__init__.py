@@ -34,12 +34,12 @@ def createApp():
     if not (URL_ROOT.startswith('/') and URL_ROOT.endswith('/')):
         raise ValueError('URL_ROOT must starts and ends with a slash (/).')
     # load wechat message view url
-    wechatMessageViewUrl = os.environ.get('wechatMessageViewUrl', None)
-    if wechatMessageViewUrl is None:
+    DETAIL_BASE_URL = os.environ.get('DETAIL_BASE_URL', None)
+    if DETAIL_BASE_URL is None:
         raise ValueError(
-            'wechatMessageViewUrl must be set to enable detail page.')
-    parseResult = urlparse(wechatMessageViewUrl)
-    allowedDomains = '{}://{}'.format(
+            'DETAIL_BASE_URL must be set to enable detail page.')
+    parseResult = urlparse(DETAIL_BASE_URL)
+    ALLOWED_DOMAINS = '{}://{}'.format(
         parseResult.scheme, parseResult.netloc)
     # load wechat token
     WECHAT_TOKEN = os.environ.get('WECHAT_TOKEN', None)
@@ -56,13 +56,13 @@ def createApp():
     app = web.Application()
     app.add_routes(routes(URL_ROOT))
     app['config'] = {
-        'APP_ID': APP_ID,
-        'WECHAT_TOKEN': WECHAT_TOKEN,
-        'wechatMessageViewUrl': wechatMessageViewUrl,
         'tokenManager': manager,
         'session': session,
         'redis': r,
-        'allowedDomains': allowedDomains
+        'APP_ID': APP_ID,
+        'WECHAT_TOKEN': WECHAT_TOKEN,
+        'DETAIL_BASE_URL': DETAIL_BASE_URL,
+        'ALLOWED_DOMAINS': ALLOWED_DOMAINS
     }
     return app
 
