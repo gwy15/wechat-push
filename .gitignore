@@ -6,6 +6,7 @@ __pycache__
 
 # development
 .vscode
+.idea
 # production
 .env
 
