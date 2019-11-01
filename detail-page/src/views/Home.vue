@@ -29,13 +29,11 @@ export default {
   },
   mounted: function() {
     const app = this;
-    console.log("post " + process.env.VUE_APP_SCENE_URL);
     axios
       .post(process.env.VUE_APP_SCENE_URL)
       .then(function(response) {
         const resp = response.data;
         if (resp.success) {
-          console.log("request success");
           app.scene = resp.data;
           // begin polling
           app.expireAt = moment.unix(app.scene.expire_at);
