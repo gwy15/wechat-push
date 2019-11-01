@@ -146,6 +146,8 @@ class Message:
 
 
 class Scene:
+    EXPIRES_IN = 5*60
+
     @staticmethod
     @utils.catchWechatError
     async def post(request: web.Request):
@@ -179,11 +181,27 @@ class Scene:
         Args:
             request (web.Request): web request
         """
-        pass
-        # TODO:
+        scene_id = request.match_info['scene_id']
+        # query redis
+        r: redis.Redis = request.app['config']['redis']
+        openID = r.get(Scene._sceneID2RedisName(scene_id))
+        if openID is None:
+            raise web.HTTPNotFound(reason='No such scene id.')
+        return {
+            'success': True,
+            'msg': '',
+            'data': {
+                'openID': openID
+            }
+        }
+
+    @staticmethod
+    def _sceneID2RedisName(scene_id):
+        return 'scene:{}'.format(scene_id)
 
 
 class Callback:
+
     @staticmethod
     @utils.verifyFromWechatCallback
     async def get(request: web.Request):
@@ -202,27 +220,31 @@ class Callback:
         afunc = {
             'event': Callback.handleEvent
         }.get(tree.find('MsgType').text.strip(), Callback.defaultHandler)
-        response = await afunc(tree)
+        response = await afunc(tree, request.app['config']['redis'])
 
         return web.Response(text='')
 
     @staticmethod
-    async def defaultHandler(tree: ElementTree.Element):
+    async def defaultHandler(tree: ElementTree.Element, r: redis.Redis):
         pass
 
     @staticmethod
-    async def handleEvent(tree: ElementTree.Element):
+    async def handleEvent(tree: ElementTree.Element, r: redis.Redis):
         openID = tree.find('FromUserName').text.strip()
         eventName = tree.find('Event').text.strip().lower()
         if eventName == 'subscribe':
             eventKey = tree.find('EventKey')
             if eventKey is None:
                 return
+            # scan to subscribe
             scene_id = int(eventKey.text.strip()[len('qrscene_'):])
-            # add to redis
+            r.set(  # add to redis
+                Scene._sceneID2RedisName(scene_id),
+                openID, ex=Scene.EXPIRES_IN)
         elif eventName == 'scan':
             scene_id = int(tree.find('EventKey').text.strip())
-            # add to redis
+            r.set(  # add to redis
+                Scene._sceneID2RedisName(scene_id),
+                openID, ex=Scene.EXPIRES_IN)
         elif eventName == 'unsubscribe':
-            # remove from redis
             pass
