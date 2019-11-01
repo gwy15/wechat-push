@@ -7,9 +7,14 @@
         <img :src="scene.QRUrl" id="qr-code" />
       </div>
       <p v-text="expireTime"></p>
-      <el-button type="success" round @click="jump2Wechat">手机点击</el-button>
+      <!-- <el-button type="success" round @click="jump2Wechat">手机点击</el-button> -->
     </div>
     <h3 v-else v-text="openID"></h3>
+    <div v-if="success">
+      <p>try POST</p>
+      <p>{{ messageUrl }}</p>
+      <p>now!</p>
+    </div>
   </div>
 </template>
 
@@ -24,7 +29,8 @@ export default {
       title: "Scan QR code to register",
       scene: null,
       openID: "Loading...",
-      expireAt: moment()
+      expireAt: moment(),
+      success: false // TODO:
     };
   },
   mounted: function() {
@@ -44,6 +50,8 @@ export default {
       })
       .catch(function() {
         app.title = "Request failed.";
+        app.openID =
+          "Try refresh or open developer console if you known what it means.";
       });
   },
   computed: {
@@ -51,7 +59,8 @@ export default {
       moment.locale("zh-CN");
       const t = moment.unix(this.scene.expire_at).fromNow();
       return t + " 过期";
-    }
+    },
+    messageUrl: () => process.env.VUE_APP_MESSAGE_URL
   },
   methods: {
     jump2Wechat: function() {
@@ -63,6 +72,7 @@ export default {
         .get(process.env.VUE_APP_SCENE_URL + "/" + app.scene.scene_id)
         .then(function(response) {
           const resp = response.data;
+          app.success = true;
           app.title = "你的 OpenID 为：";
           app.scene = null;
           app.openID = resp.data.openID;
@@ -84,6 +94,6 @@ export default {
 
 <style scoped>
 img#qr-code {
-  max-width: 400px;
+  max-width: 300px;
 }
 </style>
