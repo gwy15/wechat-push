@@ -187,13 +187,13 @@ class Scene:
         openID = r.get(Scene._sceneID2RedisName(scene_id))
         if openID is None:
             raise web.HTTPNotFound(reason='No such scene id.')
-        return {
+        return web.json_response({
             'success': True,
             'msg': '',
             'data': {
                 'openID': openID
             }
-        }
+        })
 
     @staticmethod
     def _sceneID2RedisName(scene_id):
