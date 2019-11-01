@@ -37,6 +37,7 @@ async def getDefaultTemplateID(tokenManager: TokenManager) -> Optional[str]:
     else:
         return templateList[0]['template_id']
 
+
 async def verifyRequest(request: web.Request):
     signature = request.rel_url.query.get('signature', None)
     timestamp = request.rel_url.query.get('timestamp', None)
@@ -49,6 +50,8 @@ async def verifyRequest(request: web.Request):
         raise web.HTTPUnauthorized(reason='bad signature.')
 
 # wrappers
+
+
 def catchWechatError(afunc):
     @functools.wraps(afunc)
     async def wrapper(*args, **kws):
@@ -65,14 +68,22 @@ def catchWechatError(afunc):
         return res
     return wrapper
 
+
 def allowCORS(afunc):
     @functools.wraps(afunc)
     async def wrapper(request, *args, **kws):
-        config = request.app['config']
-        response = await afunc(request, *args, **kws)
-        response.headers['Access-Control-Allow-Origin'] = config['ALLOWED_DOMAINS']
+        headers = {
+            'Access-Control-Allow-Origin': request.app['config']['ALLOWED_DOMAINS']
+        }
+        try:
+            response = await afunc(request, *args, **kws)
+        except web.HTTPException as ex:
+            ex.headers.update(headers)
+            raise
+        response.headers.update(headers)
         return response
     return wrapper
+
 
 def verifyFromWechatCallback(afunc):
     @functools.wraps(afunc)

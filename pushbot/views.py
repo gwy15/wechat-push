@@ -79,11 +79,12 @@ class Message:
             'body': {'value': body}
         }
         token = uuid.uuid4().hex
-        detailUrl = config['DETAIL_BASE_URL'] + '?token=' + token
+        detailUrl = config['DETAIL_BASE_URL'] + '/' + token
 
         # send
         client = WechatTemplateMessageClient(manager)
-        responseData = await client.sendTemplateMessage(receiver, templateID, postData, detailUrl)
+        responseData = await client.sendTemplateMessage(
+            receiver, templateID, postData, detailUrl)
         responseData['token'] = token
         response = {
             'success': True,
@@ -149,6 +150,7 @@ class Scene:
     EXPIRES_IN = 5*60
 
     @staticmethod
+    @utils.allowCORS
     @utils.catchWechatError
     async def post(request: web.Request):
         """Get a new scene ID
@@ -176,6 +178,7 @@ class Scene:
         })
 
     @staticmethod
+    @utils.allowCORS
     async def get(request: web.Request):
         """Get open id for a scene ID
 

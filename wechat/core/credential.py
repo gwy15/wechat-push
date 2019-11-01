@@ -5,10 +5,14 @@ import json
 from pathlib import Path
 from typing import Optional, Union
 import time
+import logging
+import datetime
 
 import aiohttp
 
 from wechat.exceptions import WechatRequestError
+
+logger = logging.getLogger(__name__)
 
 
 class AccessToken(str):
@@ -46,6 +50,13 @@ class AccessToken(str):
             'expiresAt': self.expiresAt
         }
 
+    def __repr__(self):
+        return '<AccessToken expiring @ {} in {:d} seconds>'.format(
+            datetime.datetime.fromtimestamp(self.expiresAt)
+            .strftime("%y-%m-%d %H:%M:%S"),
+            int(self.expiresAt - time.time())
+        )
+
 
 class TokenManager():
     def __init__(self, appID: str, appSecret: str, path: Path = None):
@@ -73,6 +84,7 @@ class TokenManager():
         self.tokenFile = self.path / 'credentials.json'
 
         self.token = self._loadToken()
+        logger.debug('Token load: {}'.format(repr(self.token)))
 
     def _loadToken(self) -> Optional[AccessToken]:
         """Return a valid token or None
@@ -131,6 +143,7 @@ class TokenManager():
         Returns:
             AccessToken: A valid token
         """
+        logger.debug('Get new access token.')
         url = 'https://api.weixin.qq.com/cgi-bin/token'
         params = {
             'grant_type': 'client_credential',

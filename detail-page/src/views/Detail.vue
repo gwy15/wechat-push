@@ -26,16 +26,13 @@ export default {
     };
   },
   created: function() {
-    document.title = "详情";
     const locale =
       window.navigator.userLanguage || window.navigator.language || "zh-CN";
     moment.locale(locale);
   },
   mounted: function() {
     const app = this;
-    // parse url param
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token", null);
+    const token = app.$route.params.token;
     if (token == null) {
       app.title = "Token not found";
       app.body = "Token not found. Don't visit this page directly.";

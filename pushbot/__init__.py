@@ -3,7 +3,7 @@ import redis
 
 from pushbot import models
 from pushbot import views
-
+from pushbot import log
 
 def routes(urlRoot):
     return [
