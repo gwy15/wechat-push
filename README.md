@@ -59,7 +59,7 @@ SQL_DB_URL = sqlite:///messages.sqlite3
 # url for front end page 前端 url
 wechatMessageViewUrl = https://wxpush.domain.com/detail
 # optional below
-urlRoot = / # set if you'd like to deploy the service under a url. e.g., https://domain.com/wechat/message
+URL_ROOT = / # set if you'd like to deploy the service under a url. e.g., https://domain.com/wechat/message
 ```
 
 For front end page, view detail-page/README.md

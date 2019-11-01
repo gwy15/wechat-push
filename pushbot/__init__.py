@@ -30,9 +30,9 @@ def createApp():
     APP_ID = os.environ['APP_ID']
     appSecret = os.environ['appSecret']
     # load url root
-    urlRoot = os.environ.get('urlRoot', '/')
-    if not (urlRoot.startswith('/') and urlRoot.endswith('/')):
-        raise ValueError('urlRoot must starts and ends with a slash (/).')
+    URL_ROOT = os.environ.get('URL_ROOT', '/')
+    if not (URL_ROOT.startswith('/') and URL_ROOT.endswith('/')):
+        raise ValueError('URL_ROOT must starts and ends with a slash (/).')
     # load wechat message view url
     wechatMessageViewUrl = os.environ.get('wechatMessageViewUrl', None)
     if wechatMessageViewUrl is None:
@@ -54,7 +54,7 @@ def createApp():
 
     # create app
     app = web.Application()
-    app.add_routes(routes(urlRoot))
+    app.add_routes(routes(URL_ROOT))
     app['config'] = {
         'APP_ID': APP_ID,
         'WECHAT_TOKEN': WECHAT_TOKEN,
