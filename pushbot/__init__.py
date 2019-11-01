@@ -28,7 +28,7 @@ def createApp():
     # load env
     dotenv.load_dotenv(dotenv.find_dotenv())
     APP_ID = os.environ['APP_ID']
-    appSecret = os.environ['appSecret']
+    APP_SECRET = os.environ['APP_SECRET']
     # load url root
     URL_ROOT = os.environ.get('URL_ROOT', '/')
     if not (URL_ROOT.startswith('/') and URL_ROOT.endswith('/')):
@@ -50,7 +50,7 @@ def createApp():
     # load SQL db
     session = models.initDB(os.environ['SQL_DB_URL'])
     # initiate token manager
-    manager = TokenManager(APP_ID, appSecret)
+    manager = TokenManager(APP_ID, APP_SECRET)
 
     # create app
     app = web.Application()

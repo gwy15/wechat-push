@@ -53,7 +53,7 @@ To deploy, users must setup their .env files.
 ```
 # edit .env
 APP_ID = XXXXXXXXXX # your wechat MP account app ID 微信服务号的APP ID
-appSecret = XXXXX  # your wechat MP account app Secret 微信服务号的 APP SECRET
+APP_SECRET = XXXXX  # your wechat MP account app Secret 微信服务号的 APP SECRET
 # the database url (compatible with sqlalchemy) 数据库URL（sqlalchemy 格式）
 SQL_DB_URL = sqlite:///messages.sqlite3
 # url for front end page 前端 url
