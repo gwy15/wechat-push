@@ -5,7 +5,7 @@ import sys
 if sys.version_info >= (3,7):
     run = asyncio.run
 else:
-    def run(awitable):
+    def run(awaitable):
         loop = asyncio.get_event_loop()
         res = loop.run_until_complete(awaitable)
         loop.close()
@@ -14,6 +14,6 @@ else:
 def async_test(asyncTestMethod):
     @wraps(asyncTestMethod)
     def wrapper(*args, **kwargs):
-        result = asyncio.run(asyncTestMethod(*args, **kwargs))
+        result = run(asyncTestMethod(*args, **kwargs))
         return result
     return wrapper
