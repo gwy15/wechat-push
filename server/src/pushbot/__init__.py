@@ -38,7 +38,7 @@ def routes(urlRoot):
 
 def createApp():
     # load env
-    dotenv.load_dotenv(dotenv.find_dotenv())
+    dotenv.load_dotenv('.env')
     # init log
     initLogger()
 

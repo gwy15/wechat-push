@@ -10,6 +10,7 @@ logs/
 .vscode
 .idea
 # production
+*.pex
 .env
 dist*
 logging.*.json
