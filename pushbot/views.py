@@ -4,6 +4,7 @@ import uuid
 import random
 from xml.etree import ElementTree
 import redis
+import logging
 
 from aiohttp import web
 
@@ -12,6 +13,8 @@ from wechat.messages import WechatTemplateMessageClient
 from wechat.accounts import WechatQRCodeClient
 from pushbot import utils
 from pushbot import models
+
+logger = logging.getLogger(__name__)
 
 
 class Message:
@@ -79,7 +82,7 @@ class Message:
             'body': {'value': body}
         }
         token = uuid.uuid4().hex
-        detailUrl = config['DETAIL_BASE_URL'] + '/' + token
+        detailUrl = config['VUE_PAGE_BASE_URL'] + 'detail/' + token
 
         # send
         client = WechatTemplateMessageClient(manager)
@@ -122,10 +125,15 @@ class Message:
     async def get(request: web.Request):
         config = request.app['config']
         token = request.match_info['token']
+        logger.debug('GET /message/{}'.format(token))
         # query from redis
         r: redis.Redis = config['redis']
         redisName = Message._token2RedisName(token)
-        data = r.hgetall(redisName)
+        try:
+            data = r.hgetall(redisName)
+        except redis.exceptions.RedisError as ex:
+            logger.warning('Redis failed: {}'.format(ex))
+            data = {}
         # if fails, retrieve from SQL db
         if len(data) == 0:
             message: models.Message
@@ -188,7 +196,12 @@ class Scene:
         scene_id = request.match_info['scene_id']
         # query redis
         r: redis.Redis = request.app['config']['redis']
-        openID = r.get(Scene._sceneID2RedisName(scene_id))
+        try:
+            openID = r.get(Scene._sceneID2RedisName(scene_id))
+        except redis.exceptions.RedisError as ex:
+            logger.warning('Redis error: {}'.format(ex))
+            openID = None
+
         if openID is None:
             raise web.HTTPNotFound(reason='No such scene id.')
         return web.json_response({

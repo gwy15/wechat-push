@@ -36,7 +36,7 @@ export default {
   mounted: function() {
     const app = this;
     axios
-      .post(process.env.VUE_APP_SCENE_URL)
+      .post(app.sceneUrl)
       .then(function(response) {
         const resp = response.data;
         if (resp.success) {
@@ -60,7 +60,8 @@ export default {
       const t = moment.unix(this.scene.expire_at).fromNow();
       return t + " 过期";
     },
-    messageUrl: () => process.env.VUE_APP_MESSAGE_URL
+    messageUrl: () => process.env.SERVER_API_ROOT_URL + "message",
+    sceneUrl: () => process.env.SERVER_API_ROOT_URL + "scene"
   },
   methods: {
     jump2Wechat: function() {
@@ -69,7 +70,7 @@ export default {
     checkScene: function() {
       const app = this;
       axios
-        .get(process.env.VUE_APP_SCENE_URL + "/" + app.scene.scene_id)
+        .get(app.sceneUrl + "/" + app.scene.scene_id)
         .then(function(response) {
           const resp = response.data;
           app.success = true;

@@ -3,7 +3,7 @@
     "formatters": {
         "simple": {
             "format": "({asctime}) - [{levelname}] <{name}@{lineno}> {message}",
-            "datefmt": "%d-%M-%Y %H:%M:%S",
+            "datefmt": "%Y-%M-%d %H:%M:%S",
             "style": "{"
         }
     },

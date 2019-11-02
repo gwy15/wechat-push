@@ -5,6 +5,9 @@ from pushbot import models
 from pushbot import views
 from pushbot import log
 
+import logging
+logger = logging.getLogger(__name__)
+
 def routes(urlRoot):
     return [
         # messages
@@ -30,15 +33,15 @@ def createApp():
     APP_ID = os.environ['APP_ID']
     APP_SECRET = os.environ['APP_SECRET']
     # load url root
-    URL_ROOT = os.environ.get('URL_ROOT', '/')
+    URL_ROOT = os.environ.get('SERVER_API_URL_ROOT', '/')
     if not (URL_ROOT.startswith('/') and URL_ROOT.endswith('/')):
-        raise ValueError('URL_ROOT must starts and ends with a slash (/).')
+        raise ValueError('SERVER_API_URL_ROOT must starts and ends with a slash (/).')
     # load wechat message view url
-    DETAIL_BASE_URL = os.environ.get('DETAIL_BASE_URL', None)
-    if DETAIL_BASE_URL is None:
+    VUE_PAGE_BASE_URL = os.environ.get('VUE_PAGE_BASE_URL', None)
+    if VUE_PAGE_BASE_URL is None:
         raise ValueError(
-            'DETAIL_BASE_URL must be set to enable detail page.')
-    parseResult = urlparse(DETAIL_BASE_URL)
+            'VUE_PAGE_BASE_URL must be set to enable detail page.')
+    parseResult = urlparse(VUE_PAGE_BASE_URL)
     ALLOWED_DOMAINS = '{}://{}'.format(
         parseResult.scheme, parseResult.netloc)
     # load wechat token
@@ -61,9 +64,10 @@ def createApp():
         'redis': r,
         'APP_ID': APP_ID,
         'WECHAT_TOKEN': WECHAT_TOKEN,
-        'DETAIL_BASE_URL': DETAIL_BASE_URL,
+        'VUE_PAGE_BASE_URL': VUE_PAGE_BASE_URL,
         'ALLOWED_DOMAINS': ALLOWED_DOMAINS
     }
+    logger.debug('App init complete.')
     return app
 
 

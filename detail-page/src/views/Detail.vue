@@ -39,7 +39,7 @@ export default {
       return;
     }
     // api request
-    const apiUrl = process.env.VUE_APP_MESSAGE_URL + "/" + token;
+    const apiUrl = app.messageUrl(token);
     axios
       .get(apiUrl)
       .then(function(response) {
@@ -63,6 +63,11 @@ export default {
   computed: {
     compiledMarkdown: function() {
       return marked(this.body);
+    }
+  },
+  methods: {
+    messageUrl(token) {
+      return process.env.SERVER_API_ROOT_URL + "message/" + token;
     }
   }
 };
