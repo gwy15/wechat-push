@@ -22,7 +22,7 @@ class Message:
 
     @staticmethod
     def _token2RedisName(token):
-        return 'message:{}'.format(token)
+        return 'wxpush:msg:{}'.format(token)
 
     @staticmethod
     def _simplifiedMessage(message: models.Message):
@@ -214,7 +214,7 @@ class Scene:
 
     @staticmethod
     def _sceneID2RedisName(scene_id):
-        return 'scene:{}'.format(scene_id)
+        return 'wxpush:scene:{}'.format(scene_id)
 
 
 class Callback:
