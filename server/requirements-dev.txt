@@ -1,2 +1,3 @@
 -r requirements.txt
 autopep8
+pex
