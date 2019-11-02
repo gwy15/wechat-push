@@ -10,6 +10,7 @@ logs/
 .vscode
 .idea
 # production
+deploy.ps1
 *.pex
 .env
 dist*
