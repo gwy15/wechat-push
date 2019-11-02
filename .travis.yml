@@ -2,28 +2,39 @@ matrix:
   include:
     - 
       language: python
-      python:
-        - "3.6"
-        - "3.7"
-      env:
-        - MAKE_TARGET=wechat_py36
-        - MAKE_TARGET=wechat_py37
+      python: "3.6"
       install:
         - pip install -r server/requirements-dev.txt
       before_script:
         - cd server
       script:
         - python src/test.py
-        - make build/$MAKE_TARGET.pex
+        - make build/wechat_py36.pex.pex
+    - 
+      language: python
+      python: "3.7"
+      install:
+        - pip install -r server/requirements-dev.txt
+      before_script:
+        - cd server
+      script:
+        - python src/test.py
+        - make build/wechat_py37.pex.pex
     - 
       language: node_js
-      node_js:
-        - "9"
-        - "10"
+      node_js: "9"
       before_install:
         - cd detail-page
       install:
         - npm install
       script:
         - npm run build
-      
+    - 
+      language: node_js
+      node_js: "10"
+      before_install:
+        - cd detail-page
+      install:
+        - npm install
+      script:
+        - npm run build
