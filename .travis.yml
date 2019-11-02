@@ -9,7 +9,7 @@ matrix:
         - cd server
       script:
         - python src/test.py
-        - make build/wechat_py36.pex
+        - NO_MIRROR=1 make build/wechat_py36.pex
     - 
       language: python
       python: "3.7"
@@ -19,7 +19,7 @@ matrix:
         - cd server
       script:
         - python src/test.py
-        - make build/wechat_py37.pex
+        - NO_MIRROR=1 make build/wechat_py37.pex
     - 
       language: node_js
       node_js: "9"

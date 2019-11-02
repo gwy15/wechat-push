@@ -1,8 +1,13 @@
+ifeq ($(NO_MIRROR), 1)
+PYPI := 
+else
+PYPI := -i https://pypi.tuna.tsinghua.edu.cn/simple/
+endif
+
 PEXFLAGS := -D src \
 			-e app \
 			-r requirements.txt \
-			-i https://pypi.tuna.tsinghua.edu.cn/simple/ \
-			-v
+			$(PYPI) -v
 
 all: build/wechat_py36.pex build/wechat_py37.pex
 
