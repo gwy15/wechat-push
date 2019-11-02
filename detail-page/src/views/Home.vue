@@ -12,7 +12,7 @@
     <h3 v-else v-text="openID"></h3>
     <div v-if="success">
       <p>try POST</p>
-      <p>{{ messageUrl }}</p>
+      <p>{{ messageUrl() }}</p>
       <p>now!</p>
     </div>
   </div>
@@ -36,7 +36,7 @@ export default {
   mounted: function() {
     const app = this;
     axios
-      .post(app.sceneUrl)
+      .post(app.sceneUrl())
       .then(function(response) {
         const resp = response.data;
         if (resp.success) {
@@ -59,18 +59,24 @@ export default {
       moment.locale("zh-CN");
       const t = moment.unix(this.scene.expire_at).fromNow();
       return t + " 过期";
-    },
-    messageUrl: () => process.env.SERVER_API_ROOT_URL + "message",
-    sceneUrl: () => process.env.SERVER_API_ROOT_URL + "scene"
+    }
   },
   methods: {
-    jump2Wechat: function() {
-      window.open(this.scene.decodedUrl, "_blank");
+    messageUrl() {
+      return process.env.VUE_APP_API_ROOT_URL + "message";
+    },
+    sceneUrl(scene_id) {
+      const url = process.env.VUE_APP_API_ROOT_URL + "scene";
+      if (scene_id) {
+        return url + "/" + scene_id;
+      } else {
+        return url;
+      }
     },
     checkScene: function() {
       const app = this;
       axios
-        .get(app.sceneUrl + "/" + app.scene.scene_id)
+        .get(app.sceneUrl(app.scene.scene_id))
         .then(function(response) {
           const resp = response.data;
           app.success = true;
@@ -78,14 +84,20 @@ export default {
           app.scene = null;
           app.openID = resp.data.openID;
         })
-        .catch(function() {
-          // not yet.
-          if (moment() > app.expireAt) {
-            app.title = "超时，请刷新重试";
-            app.scene = null;
-            app.openID = "";
+        .catch(function(err) {
+          if (err.response.status == 404) {
+            // not yet.
+            if (moment() > app.expireAt) {
+              app.title = "超时，请刷新重试";
+              app.scene = null;
+              app.openID = "";
+            } else {
+              window.setTimeout(app.checkScene, 1000);
+            }
           } else {
-            window.setTimeout(app.checkScene, 1000);
+            app.title = "Request failed.";
+            app.scene = null;
+            app.openID = err.response.data;
           }
         });
     }

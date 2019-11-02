@@ -57,9 +57,9 @@ APP_SECRET = XXXXX  # your wechat MP account app Secret 微信服务号的 APP S
 # the database url (compatible with sqlalchemy) 数据库URL（sqlalchemy 格式）
 SQL_DB_URL = sqlite:///messages.sqlite3
 # url for front end page 前端 url
-VUE_PAGE_BASE_URL = https://wxpush.domain.com/detail
+VUE_APP_ROOT_URL = https://wxpush.domain.com/detail
 # optional below
-SERVER_API_URL_ROOT = / # set if you'd like to deploy the service under a url. e.g., https://domain.com/wechat/message
+SERVER_API_ROOT = / # set if you'd like to deploy the service under a url. e.g., https://domain.com/wechat/message
 ```
 
 For front end page, view detail-page/README.md

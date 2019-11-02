@@ -82,7 +82,7 @@ class Message:
             'body': {'value': body}
         }
         token = uuid.uuid4().hex
-        detailUrl = config['VUE_PAGE_BASE_URL'] + 'detail/' + token
+        detailUrl = config['VUE_APP_ROOT_URL'] + 'detail/' + token
 
         # send
         client = WechatTemplateMessageClient(manager)

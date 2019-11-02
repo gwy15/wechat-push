@@ -55,9 +55,14 @@ export default {
           app.body = resp.msg;
         }
       })
-      .catch(function() {
-        app.title = "Request failed.";
-        app.body = "Your network request has failed.";
+      .catch(function(err) {
+        if (err.response.status == 404) {
+          app.title = "Token not found.";
+          app.body = err.response.data;
+        } else {
+          app.title = "Request failed.";
+          app.body = "Your network request has failed.";
+        }
       });
   },
   computed: {
@@ -67,7 +72,7 @@ export default {
   },
   methods: {
     messageUrl(token) {
-      return process.env.SERVER_API_ROOT_URL + "message/" + token;
+      return process.env.VUE_APP_API_ROOT_URL + "message/" + token;
     }
   }
 };
