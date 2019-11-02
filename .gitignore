@@ -3,6 +3,8 @@ __pycache__
 *.sqlite3
 *.sqlite
 *.db
+log/
+logs/
 
 # development
 .vscode
@@ -10,4 +12,4 @@ __pycache__
 # production
 .env
 dist*
-
+logging.*.json
