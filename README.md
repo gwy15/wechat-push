@@ -47,7 +47,7 @@ To deploy, users must setup their .env files.
 部署前，需要设置一些环境变量。
 
 ```
-# edit server/.env
+# edit .env
 APP_ID = XXXXXXXXXX # your wechat MP account app ID 微信服务号的APP ID
 APP_SECRET = XXXXX  # your wechat MP account app Secret 微信服务号的 APP SECRET
 WECHAT_TOKEN = XXXX # your self defined wechat token 微信服务号的 token
@@ -65,9 +65,14 @@ For nginx setup, see `config/your-site.conf`
 Nginx 设置参见 `config/your-site.conf`
 
 ### Get Things Running | 把服务跑起来！
-
+Linux:
 ```
-./wechat_py*.pex --port 1235
+./wechat_xxxx.pex --port 1235
+```
+
+Windows:
+```
+python ./wechat_xxxx.py --port 1235
 ```
 
 ## TODOS
