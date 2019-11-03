@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # make vue page
-cd detail-page
+cd wechat-push-vue
 npm run build
 mkdir -p ../release
 cp -r dist ../release/
