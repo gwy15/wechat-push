@@ -5,8 +5,10 @@ python:
 os:
   - linux
 dist: bionic
+sudo: true
 before_install:
-  - apt install nodejs npm
+  - sudo apt update
+  - sudo apt install -y nodejs npm
 install:
   - cd wechat-push-vue && npm install & cd ..
   - pip install -r server/requirements-dev.txt
