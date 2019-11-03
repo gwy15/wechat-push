@@ -10,9 +10,9 @@ before_install:
   - sudo apt update
   - sudo apt install -y nodejs npm
 install:
-  - cd wechat-push-vue && npm install & cd ..
+  - cd wechat-push-vue && npm install && cd ..
   - pip install -r server/requirements-dev.txt
 script:
-  - cd wechat-push-vue && npm run build & cd ..
-  - cd server && python src/test.py & cd ..
+  - cd wechat-push-vue && npm run build && cd ..
+  - cd server && python src/test.py && cd ..
   - NO_MIRROR=1 make $TRAVIS_OS_NAME
