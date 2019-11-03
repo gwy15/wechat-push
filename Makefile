@@ -3,7 +3,7 @@ VUE_SRC = $(VUE)/src/* $(VUE)/public/* $(VUE)/.env $(VUE)/vue.config.js
 INDEX_HTML := release/dist/index.html
 
 ifeq ($(NO_MIRROR), 1)
-PYPI := " "
+PYPI :=
 else
 PYPI := -i https://pypi.tuna.tsinghua.edu.cn/simple/
 endif
