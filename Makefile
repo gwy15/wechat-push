@@ -12,54 +12,44 @@ PEXFLAGS := -D src -e app \
 PY_SRC := server/requirements.txt server/src/*.py
 EXAMPLES = server/.env.example server/logging.json.example
 
-WIN_PLAT := win_amd64-cp-37-cp37m
+WIN_36_PLAT := win_amd64-cp-36-cp36m
+WIN_37_PLAT := win_amd64-cp-37-cp37m
 LINUX_36_PLAT = linux_x86_64-cp-36-cp36m
 LINUX_37_PLAT = linux_x86_64-cp-37-cp37m
 
-WIN_TARGET := wechat_push_$(WIN_PLAT)
-LINUX_36_TARGET := wechat_push_$(LINUX_36_PLAT)
-LINUX_37_TARGET := wechat_push_$(LINUX_37_PLAT)
+WIN_TARGET := wechat_push_win_amd64-cp-37-cp37m
+LINUX_TARGET := wechat_push_linux_x86_64
 
 
 .PHONY: windows linux
 
 windows: release/$(WIN_TARGET).zip
 
-linux: release/$(LINUX_36_TARGET).zip release/$(LINUX_37_TARGET).zip
+linux: release/$(LINUX_TARGET).zip
 
 # define zips
 release/$(WIN_TARGET).zip: $(INDEX_HTML) release/$(WIN_TARGET).pex
 	cp $(EXAMPLES) release/
 	cd release && zip ../$@ .env.example logging.json.example -r dist $(WIN_TARGET).pex
-	echo $@ Done.
+	@echo $@ Done.
 
-release/$(LINUX_36_TARGET).zip: $(INDEX_HTML) release/$(LINUX_36_TARGET).pex
+release/$(LINUX_TARGET).zip: $(INDEX_HTML) release/$(LINUX_TARGET).pex
 	cp $(EXAMPLES) release/
-	cd release &&  zip ../$@ .env.example logging.json.example -r dist $(LINUX_36_TARGET).pex
-	echo $@ Done.
-
-release/$(LINUX_37_TARGET).zip: $(INDEX_HTML) release/$(LINUX_37_TARGET).pex
-	cp $(EXAMPLES) release/
-	cd release && zip ../$@ .env.example logging.json.example -r dist $(LINUX_37_TARGET).pex
-	echo $@ Done.
+	cd release &&  zip ../$@ .env.example logging.json.example -r dist $(LINUX_TARGET).pex
+	@echo $@ Done.
 
 # define vue page build
 $(INDEX_HTML): $(VUE_SRC)
 	cd $(VUE) && npm run build
-	cp -rf $(VUE)/dist release/
+	cp -rf $(VUE)/dist release/dist
 
 # define pex build
 release/$(WIN_TARGET).pex: $(PY_SRC)
 	cd server && pex -o ../$@ $(PEXFLAGS) \
-		--platform=$(WIN_PLAT)
+		--platform=$(WIN_37_PLAT)
 
-release/$(LINUX_36_TARGET).pex: $(PY_SRC)
+release/$(LINUX_TARGET).pex: $(PY_SRC)
 	cd server && pex -o ../$@ $(PEXFLAGS) \
-		--python=python3.6
-		--platform=$(LINUX_36_PLAT)
-
-release/$(LINUX_37_TARGET).pex: $(PY_SRC)
-	cd server && pex -o ../$@ $(PEXFLAGS) \
-		--python=python3.7
-		--platform=$(LINUX_37_PLAT)
+		--python=python3.6 --python=python3.7 \
+		--platform=$(LINUX_36_PLAT) --platform=$(LINUX_37_PLAT)
 

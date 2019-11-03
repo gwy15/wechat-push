@@ -1,10 +1,10 @@
 language: python
-jobs:
-  include:
-    - python: 3.6
-      env: TARGET=release/linux_x86_64-cp-36-cp36m.zip
-    - python: 3.7
-      env: TARGET=release/linux_x86_64-cp-37-cp37m.zip
+python:
+  - 3.6
+  - 3.7
+os:
+  - linux
+dist: bionic
 before_install:
   - apt install nodejs npm
 install:
@@ -13,4 +13,4 @@ install:
 script:
   - cd wechat-push-vue && npm run build & cd ..
   - cd server && python src/test.py & cd ..
-  - NO_MIRROR=1 make $TARGET
+  - NO_MIRROR=1 make $TRAVIS_OS_NAME
