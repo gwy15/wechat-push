@@ -1,10 +1,3 @@
-# make vue page
-cd detail-page
-npm run build
-mkdir -Force ../release
-cp -r -Force dist ../release/
-cd ..
-
 # make pex
 cd server
 cp .env.example ../release/.env # copy default env

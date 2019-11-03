@@ -1,5 +1,5 @@
 <template>
-  <div class="detail-page">
+  <div class="detail">
     <h2>{{ title }}</h2>
     <p id="created-time">{{ createdTime.fromNow() }}</p>
     <div id="body" v-html="compiledMarkdown"></div>
@@ -80,7 +80,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-div.detail-page {
+div.detail {
   max-width: 600px;
   margin: auto;
   padding-left: 10px;

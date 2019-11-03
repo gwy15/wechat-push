@@ -1,4 +1,4 @@
-# detail-page
+# wechat-push-vue
 
 ## Project setup
 ```
