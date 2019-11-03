@@ -7,6 +7,7 @@ os:
 dist: bionic
 sudo: true
 before_install:
+  - export _PY=$(python3 -c "v=__import__('sys').version_info;print('{}{}'.format(v.major,v.minor))")
   - sudo apt update
   - sudo apt install -y nodejs npm
 install:
@@ -15,4 +16,4 @@ install:
 script:
   - cd wechat-push-vue && npm run build && cd ..
   - cd server && python src/test.py && cd ..
-  - NO_MIRROR=1 make $TRAVIS_OS_NAME
+  - NO_MIRROR=1 make release/wechat_push_linux_x86_64-cp-$_PY-cp$_PYm
