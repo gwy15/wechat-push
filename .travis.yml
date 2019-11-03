@@ -16,4 +16,4 @@ install:
 script:
   - cd wechat-push-vue && npm run build && cd ..
   - cd server && python src/test.py && cd ..
-  - NO_MIRROR=1 make release/wechat_push_linux_x86_64-cp-${_PY}-cp${_PY}m
+  - NO_MIRROR=1 make release/wechat_push_linux_x86_64-cp-${_PY}-cp${_PY}m.zip
