@@ -40,6 +40,7 @@ release/$(LINUX_TARGET).zip: $(INDEX_HTML) release/$(LINUX_TARGET).pex
 
 # define vue page build
 $(INDEX_HTML): $(VUE_SRC)
+	mkdir -p release
 	cd $(VUE) && npm run build
 	cp -rf $(VUE)/dist release/dist
 
