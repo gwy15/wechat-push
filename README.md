@@ -55,7 +55,7 @@ WECHAT_TOKEN = XXXX # your self defined wechat token 微信服务号的 token
 SQL_DB_URL = sqlite:///messages.sqlite3
 REDIS_URL = redis://@localhost:1234/0
 
-# root url for front end page 前端根 url
+# full root url for front end page 前端根 url，需要填写完整 URL
 VUE_APP_ROOT_URL = https://your.domain.com/
 SERVER_API_ROOT = /
 ```
@@ -63,6 +63,14 @@ SERVER_API_ROOT = /
 For nginx setup, see `config/your-site.conf`
 
 Nginx 设置参见 `config/your-site.conf`
+
+### Wechat Setup | 微信服务号设置
+Callback url
+
+回调 url
+```
+https://your.domain.com/callback
+```
 
 ### Get Things Running | 把服务跑起来！
 Linux:
@@ -80,4 +88,5 @@ python ./wechat_xxxx.py --port 1235
 - [x] Redis
 - [x] Account Bind
 - [x] Scan QR Page
+- [x] Sender Page
 - [ ] Threshold For IP And Receiver

@@ -6,6 +6,7 @@ npm install
 ```
 
 + edit `./.env` to follow your server side settings.
++ normally you don't have to edit anything if front-end and server are deployed under the same domain with root path.
 
 ### Compiles and hot-reloads for development
 ```
