@@ -11,6 +11,7 @@ PEXFLAGS := -D src -e app \
 			$(PYPI) -r requirements.txt -v -v
 PY_SRC := server/requirements.txt server/src/*.py
 EXAMPLES = server/.env.example server/logging.json.example config/your-site.conf
+PACK_EXAMPLES = .env.example logging.json.example your-site.conf
 
 WIN_36_PLAT := win_amd64-cp-36-cp36m
 WIN_37_PLAT := win_amd64-cp-37-cp37m
@@ -30,17 +31,17 @@ linux: release/$(LINUX_36_TARGET).zip release/$(LINUX_37_TARGET).zip
 # define zips
 release/$(WIN_37_TARGET).zip: $(INDEX_HTML) release/$(WIN_37_TARGET).pex
 	cp $(EXAMPLES) release/
-	cd release && zip ../$@ .env.example logging.json.example -r dist $(WIN_37_TARGET).pex
+	cd release && zip ../$@ $(PACK_EXAMPLES) -r dist $(WIN_37_TARGET).pex
 	@echo $@ Done.
 
 release/$(LINUX_36_TARGET).zip: $(INDEX_HTML) release/$(LINUX_36_TARGET).pex
 	cp $(EXAMPLES) release/
-	cd release &&  zip ../$@ .env.example logging.json.example -r dist $(LINUX_36_TARGET).pex
+	cd release && zip ../$@ $(PACK_EXAMPLES) -r dist $(LINUX_36_TARGET).pex
 	@echo $@ Done.
 
 release/$(LINUX_37_TARGET).zip: $(INDEX_HTML) release/$(LINUX_37_TARGET).pex
 	cp $(EXAMPLES) release/
-	cd release &&  zip ../$@ .env.example logging.json.example -r dist $(LINUX_37_TARGET).pex
+	cd release && zip ../$@ $(PACK_EXAMPLES) -r dist $(LINUX_37_TARGET).pex
 	@echo $@ Done.
 
 # define vue page build
