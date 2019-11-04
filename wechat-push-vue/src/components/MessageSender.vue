@@ -101,10 +101,8 @@ export default {
             removeLoading();
             if (resp.success) {
               msg.success("Request success");
-              console.log(resp.data);
               app.success = true;
               app.token = resp.data.token;
-              console.log(app);
             } else {
               if (resp.msg.includes("40003")) {
                 msg.error("Wechat request failed. Check your open ID.");
