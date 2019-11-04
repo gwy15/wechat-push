@@ -11,6 +11,12 @@ const routes = [
     component: Home
   },
   {
+    path: "/sender",
+    name: "sender",
+    component: () =>
+      import(/* webpackChunkName: "sendpage" */ "../views/SendPage.vue")
+  },
+  {
     path: "/detail/:token",
     name: "detail",
     // route level code-splitting

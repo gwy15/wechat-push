@@ -7,12 +7,11 @@
         <img :src="scene.QRUrl" id="qr-code" />
       </div>
       <p v-text="expireTime"></p>
-      <!-- <el-button type="success" round @click="jump2Wechat">手机点击</el-button> -->
     </div>
     <h3 v-else v-text="openID"></h3>
     <div v-if="success">
       <p>try POST</p>
-      <p>{{ messageUrl() }}</p>
+      <p>{{ urls.messageUrl() }}</p>
       <p>now!</p>
     </div>
   </div>
@@ -21,6 +20,7 @@
 <script>
 import axios from "axios";
 import moment from "moment";
+import { urls } from "@/utils/url";
 
 export default {
   name: "home",
@@ -36,7 +36,7 @@ export default {
   mounted: function() {
     const app = this;
     axios
-      .post(app.sceneUrl())
+      .post(urls.sceneUrl())
       .then(function(response) {
         const resp = response.data;
         if (resp.success) {
@@ -62,21 +62,10 @@ export default {
     }
   },
   methods: {
-    messageUrl() {
-      return process.env.VUE_APP_API_ROOT_URL + "message";
-    },
-    sceneUrl(scene_id) {
-      const url = process.env.VUE_APP_API_ROOT_URL + "scene";
-      if (scene_id) {
-        return url + "/" + scene_id;
-      } else {
-        return url;
-      }
-    },
     checkScene: function() {
       const app = this;
       axios
-        .get(app.sceneUrl(app.scene.scene_id))
+        .get(urls.sceneUrl(app.scene.scene_id))
         .then(function(response) {
           const resp = response.data;
           app.success = true;

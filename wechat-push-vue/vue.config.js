@@ -9,6 +9,6 @@ module.exports = {
         localesToKeep: ["zh-CN"]
       })
     ],
-    devtool: 'source-map'
+    devtool: "source-map"
   }
 };

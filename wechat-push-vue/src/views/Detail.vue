@@ -14,6 +14,7 @@
 import axios from "axios";
 import marked from "marked";
 import moment from "moment";
+import { urls } from "@/utils/url";
 
 export default {
   name: "DetailPage",
@@ -39,7 +40,7 @@ export default {
       return;
     }
     // api request
-    const apiUrl = app.messageUrl(token);
+    const apiUrl = urls.messageUrl(token);
     axios
       .get(apiUrl)
       .then(function(response) {
@@ -68,11 +69,6 @@ export default {
   computed: {
     compiledMarkdown: function() {
       return marked(this.body);
-    }
-  },
-  methods: {
-    messageUrl(token) {
-      return process.env.VUE_APP_API_ROOT_URL + "message/" + token;
     }
   }
 };

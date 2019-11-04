@@ -1,10 +1,11 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
-import { Button } from "element-ui";
+import "view-design/dist/styles/iview.css";
+import { Message } from "view-design";
 
 Vue.config.productionTip = false;
-Vue.use(Button);
+Vue.prototype.$Message = Message;
 
 new Vue({
   router,
