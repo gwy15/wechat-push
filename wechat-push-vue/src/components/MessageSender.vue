@@ -9,7 +9,10 @@
       :label-width="100"
     >
       <FormItem label="openID" prop="openID">
-        <Input v-model="formData.openID" placeholder="Input OpenID for receiver" />
+        <Input
+          v-model="formData.openID"
+          placeholder="Input OpenID for receiver"
+        />
       </FormItem>
       <FormItem label="Title" prop="title">
         <Input v-model="formData.title" placeholder="Input title for message" />
@@ -23,11 +26,16 @@
         />
       </FormItem>
       <FormItem label="url" prop="url">
-        <Input v-model="formData.url" placeholder="Input url for message (Optional)." />
+        <Input
+          v-model="formData.url"
+          placeholder="Input url for message (Optional)."
+        />
       </FormItem>
       <FormItem>
         <Button type="primary" @click="handleSubmit('senderForm')">发送</Button>
-        <Button v-if="success" @click="gotoDetail" style="margin-left: 8px">查看</Button>
+        <Button v-if="success" @click="gotoDetail" style="margin-left: 8px">
+          查看
+        </Button>
       </FormItem>
     </Form>
   </div>

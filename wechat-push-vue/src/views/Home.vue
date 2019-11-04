@@ -23,7 +23,7 @@ import MessageSender from "@/components/MessageSender";
 
 export default {
   name: "home",
-  components:{
+  components: {
     MessageSender
   },
   data: function() {
