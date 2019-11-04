@@ -10,9 +10,7 @@
     </div>
     <h3 v-else v-text="openID"></h3>
     <div v-if="success">
-      <p>try POST</p>
-      <p>{{ urls.messageUrl() }}</p>
-      <p>now!</p>
+      <MessageSender :openID="openID" />
     </div>
   </div>
 </template>
@@ -21,16 +19,20 @@
 import axios from "axios";
 import moment from "moment";
 import { urls } from "@/utils/url";
+import MessageSender from "@/components/MessageSender";
 
 export default {
   name: "home",
+  components:{
+    MessageSender
+  },
   data: function() {
     return {
       title: "Scan QR code to register",
       scene: null,
       openID: "Loading...",
       expireAt: moment(),
-      success: false // TODO:
+      success: false
     };
   },
   mounted: function() {
