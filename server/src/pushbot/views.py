@@ -37,10 +37,15 @@ class Message:
     def _save2Redis(r: redis.Redis, message: models.Message):
         redisName = Message._token2RedisName(message.id)
         mapping = Message._simplifiedMessage(message)
-        r.hmset(redisName, mapping)
-        r.expire(redisName, Message.EXPIRES_IN)  # expires
+        try:
+            r.hmset(redisName, mapping)
+            r.expire(redisName, Message.EXPIRES_IN)  # expires
+        except redis.exceptions.RedisError as ex:
+            logger.warning('Redis error @_save2Redis: {}'.format(ex))
+            return
 
     @staticmethod
+    @utils.allowCORS
     @utils.catchWechatError
     async def post(request: web.Request):
         """
