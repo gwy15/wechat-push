@@ -2,13 +2,13 @@
   <div class="message-sender">
     <Form
       ref="senderForm"
-      style="max-width: 600px; margin:auto"
+      style="max-width: 500px; margin:auto; padding-right:10px;"
       :model="formData"
       :rules="ruleMessage"
       label-position="right"
-      :label-width="100"
+      :label-width="60"
     >
-      <FormItem label="openID" prop="openID">
+      <FormItem label="ID" prop="openID">
         <Input
           v-model="formData.openID"
           placeholder="Input OpenID for receiver"
