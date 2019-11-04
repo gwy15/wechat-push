@@ -10,7 +10,7 @@ endif
 PEXFLAGS := -D src -e app \
 			$(PYPI) -r requirements.txt -v -v
 PY_SRC := server/requirements.txt server/src/*.py
-EXAMPLES = server/.env.example server/logging.json.example
+EXAMPLES = server/.env.example server/logging.json.example config/your-site.conf
 
 WIN_36_PLAT := win_amd64-cp-36-cp36m
 WIN_37_PLAT := win_amd64-cp-37-cp37m
