@@ -7,13 +7,17 @@ Wechat-push uses python/aiohttp as backend and Vue as frontend.
 Wechat-push 可以利用微信服务号向手机推送消息，如服务器报警等。
 Wechat-push 使用 python 作为后端，Vue 作为前端界面。
 
+*Assume `https://your.domain.com/` is used as domain below.*
+
+*以下假设你使用 `https://your.domain.com/` 作为域名。*
+
 ## Usage 使用方法
 
 Wechat-push provides RESTful API. Wechat-push 提供 RESTful API。
 
 ### Send a message 发送消息
 ```
-POST https://domain.com/message
+POST https://your.domain.com/message
 data: {
     receiver: receiver open ID,
     title: message title,
@@ -31,17 +35,16 @@ return:
 
 ### Receive a message 接受消息
 
-Visit `https://domain.com/` for open ID. 访问 `https://domain.com/` 扫码关注获取你的 open ID。
+Visit `https://your.domain.com/` for open ID. 访问 `https://your.domain.com/` 扫码关注获取你的 open ID。
 
 Pick up your phone and open Wechat. 手机打开微信。
 
 ## Deployment | 部署
 
-Download [releases](https://github.com/gwy15/wechat-push/releases)
-
-下载 [分发](https://github.com/gwy15/wechat-push/releases)
+Download [releases](https://github.com/gwy15/wechat-push/releases)  下载 [分发](https://github.com/gwy15/wechat-push/releases)
 
 ### Environment Setup | 环境设置
+
 To deploy, users must setup their .env files.
 
 部署前，需要设置一些环境变量。
@@ -50,24 +53,26 @@ To deploy, users must setup their .env files.
 # edit .env
 APP_ID = XXXXXXXXXX # your wechat MP account app ID 微信服务号的APP ID
 APP_SECRET = XXXXX  # your wechat MP account app Secret 微信服务号的 APP SECRET
-WECHAT_TOKEN = XXXX # your self defined wechat token 微信服务号的 token
+WECHAT_TOKEN = XXXX # your self defined wechat callback token 微信服务号的回调 token
 
 SQL_DB_URL = sqlite:///messages.sqlite3
-REDIS_URL = redis://@localhost:1234/0
+REDIS_URL = redis://@localhost:1234/0       # optional.*
 
 # full root url for front end page 前端根 url，需要填写完整 URL
 VUE_APP_ROOT_URL = https://your.domain.com/
 SERVER_API_ROOT = /
 ```
 
-For nginx setup, see `config/your-site.conf`
+For nginx setup, see `config/your-site.conf`.
+
+\* *scan-for-open-id doesn't work without redis.*
 
 Nginx 设置参见 `config/your-site.conf`
 
-### Wechat Setup | 微信服务号设置
-Callback url
+\* *若 REDIS_URL 无法连接，则无法使用扫码获得 Open ID 功能。*
 
-回调 url
+### Wechat MP Setup | 微信服务号设置
+Callback url  回调 url
 ```
 https://your.domain.com/callback
 ```
@@ -89,4 +94,5 @@ python ./wechat_xxxx.py --port 1235
 - [x] Account Bind
 - [x] Scan QR Page
 - [x] Sender Page
+- [ ] Scan Open ID Without Redis
 - [ ] Threshold For IP And Receiver
