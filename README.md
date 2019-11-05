@@ -7,11 +7,13 @@ Wechat-push uses python/aiohttp as backend and Vue as frontend.
 Wechat-push 可以利用微信服务号向手机推送消息，如服务器报警等。
 Wechat-push 使用 python 作为后端，Vue 作为前端界面。
 
+![Demo](docs/images/wechat-push-demo.png)
+
+## Usage 使用方法
+
 *Assume `https://your.domain.com/` is used as domain below.*
 
 *以下假设你使用 `https://your.domain.com/` 作为域名。*
-
-## Usage 使用方法
 
 Wechat-push provides RESTful API. Wechat-push 提供 RESTful API。
 
@@ -72,12 +74,21 @@ Nginx 设置参见 `config/your-site.conf`
 \* *若 REDIS_URL 无法连接，则无法使用扫码获得 Open ID 功能。*
 
 ### Wechat MP Setup | 微信服务号设置
-Callback url  回调 url
+
+Use [Test Account](https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?t=sandbox/login) if you don't have a Service Account.
+
+如果你没有微信服务号（公众号无法发送模板消息），使用 [测试账号](https://mp.weixin.qq.com/debug/cgi-bin/sandboxinfo?t=sandbox/login)。
+
+Callback url*  回调 url*
 ```
 https://your.domain.com/callback
 ```
 
-### Get Things Running | 把服务跑起来！
+\* Only ports 80/443 are accceptable for wechat.
+
+\* 微信只接受 80/443 端口的回调，若公网无法访问这两个端口，可以发送消息但无法扫码获取 ID。
+
+### Get Things Running Now! | 把服务跑起来！
 Linux:
 ```
 ./wechat_xxxx.pex --port 1235
