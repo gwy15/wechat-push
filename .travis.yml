@@ -9,7 +9,8 @@ sudo: true
 before_install:
   - export _PY=$(python3 -c "v=__import__('sys').version_info;print('{}{}'.format(v.major,v.minor))")
   - sudo apt update
-  - sudo apt install -y nodejs npm
+  - sudo apt-get install -y nodejs-dev node-gyp libssl1.0-dev
+  - sudo apt-get install -y nodejs npm
 install:
   - cd wechat-push-vue && npm install && cd ..
   - pip install -r server/requirements-dev.txt
