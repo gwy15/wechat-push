@@ -80,7 +80,7 @@ class TokenManager():
                     'Param path must be pathlib.Path or str, not {}'.format(type(path).__name__))
             self.path = Path(path)
 
-        self.path.mkdir(exist_ok=True)
+        self.path.mkdir(parents=True, exist_ok=True)
         self.tokenFile = self.path / 'credentials.json'
 
         self.token = self._loadToken()
