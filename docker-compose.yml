@@ -1,0 +1,35 @@
+version: "3"
+services:
+    redis:
+        container_name: "wechat-push-redis"
+        image: "redis:5.0-alpine"
+        expose: 
+            - 6379
+    web:
+        container_name: "wechat-push-web"
+        image: "gwy15/wechat-push-web:${TAG:?TAG Env not set.}"
+        build:
+            dockerfile: "./docker/web/Dockerfile"
+            context: "."
+        expose:
+            - 8080
+        depends_on:
+            - redis
+        environment:
+            APP_ID: YOUR_APP_ID
+            APP_SECRET: YOUR_APP_SECRET
+            WECHAT_TOKEN: YOUR_WECHAT_TOKEN
+            VUE_APP_ROOT_URL: "http://your.domain.com/"
+            REDIS_URL: redis://@127.0.0.1:6379/0
+            SQL_DB_URL: sqlite:///data/messages.sqlite3
+            SERVER_API_ROOT: /
+        volumes: 
+            - ./data:/data
+    nginx:
+        container_name: "wechat-push-nginx"
+        image: "gwy15/wechat-push-nginx:${TAG:?TAG Env not set.}"
+        build:
+            dockerfile: "./docker/nginx/Dockerfile"
+            context: "."
+        ports: 
+            - "80:80"

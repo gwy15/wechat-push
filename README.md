@@ -112,5 +112,7 @@ python ./wechat_xxxx.pex --port 1235
 - [x] Account Bind
 - [x] Scan QR Page
 - [x] Sender Page
+- [x] Docker support
+- [ ] Docker secret management
 - [ ] Scan Open ID Without Redis
 - [ ] Threshold For IP And Receiver
