@@ -38,6 +38,6 @@ jobs:
   - language: python
     python: 3.7
     services: docker
-    install:
+    script:
       - export TAG=$(git describe --tags)
       - docker-compose build
