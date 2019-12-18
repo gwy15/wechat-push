@@ -5,9 +5,9 @@ INDEX_HTML := release/dist/index.html
 ifeq ($(NO_MIRROR), 1)
 PYPI :=
 else
-PYPI := -i https://pypi.tuna.tsinghua.edu.cn/simple/
+PYPI := -i https://pypi.tuna.tsinghua.edu.cn/simple/ --no-index
 endif
-PEXFLAGS := -D src --no-index \
+PEXFLAGS := -D src \
 			$(PYPI) -r requirements.txt -v \
 			-e app
 PY_SRC := server/requirements.txt server/src/*.py
