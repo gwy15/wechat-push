@@ -1,0 +1,21 @@
+name: Webpage CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    - name: Install dependencies
+      run: |
+        cd wechat-push-vue && npm install
+    - name: build
+      run: |
+        cd wechat-push-vue && npm build
+
