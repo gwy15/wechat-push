@@ -65,7 +65,7 @@ def catchWechatError(afunc):
             }
             return web.json_response(data)
 
-        return res
+        return response
     return wrapper
 
 
@@ -73,7 +73,8 @@ def allowCORS(afunc):
     @functools.wraps(afunc)
     async def wrapper(request, *args, **kws):
         headers = {
-            'Access-Control-Allow-Origin': request.app['config']['ALLOWED_DOMAINS']
+            'Access-Control-Allow-Origin':
+                request.app['config']['ALLOWED_DOMAINS']
         }
         try:
             response = await afunc(request, *args, **kws)

@@ -1,6 +1,3 @@
-import asyncio
-import random
-import string
 import json
 from pathlib import Path
 from typing import Optional, Union
@@ -77,7 +74,9 @@ class TokenManager():
         else:
             if not isinstance(path, (Path, str)):
                 raise ValueError(
-                    'Param path must be pathlib.Path or str, not {}'.format(type(path).__name__))
+                    'Param path must be pathlib.Path or str, not {}'.format(
+                        type(path).__name__)
+                )
             self.path = Path(path)
 
         self.path.mkdir(parents=True, exist_ok=True)

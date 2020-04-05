@@ -1,5 +1,5 @@
 import time
-from typing import Optional, Union
+from typing import Optional
 import uuid
 import random
 from xml.etree import ElementTree
@@ -242,7 +242,7 @@ class Callback:
         afunc = {
             'event': Callback.handleEvent
         }.get(tree.find('MsgType').text.strip(), Callback.defaultHandler)
-        response = await afunc(tree, request.app['config']['redis'])
+        await afunc(tree, request.app['config']['redis'])
 
         return web.Response(text='')
 

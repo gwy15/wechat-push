@@ -1,12 +1,12 @@
-import asyncio
-import aiohttp
-from typing import List
+from typing import Optional
 
 from wechat.core import BaseRequest
 
 
 class WechatTemplateMessageClient(BaseRequest):
-    async def sendTemplateMessage(self, receiverOpenID, templateID, data, url=None):
+    async def sendTemplateMessage(
+            self, receiverOpenID: str, templateID: str,
+            data: str, url: Optional[str] = None):
         apiUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send'
         templateData = {
             'touser': receiverOpenID,
@@ -19,6 +19,7 @@ class WechatTemplateMessageClient(BaseRequest):
         return response
 
     async def getTemplateList(self):
-        url = 'https://api.weixin.qq.com/cgi-bin/template/get_all_private_template'
+        url = 'https://api.weixin.qq.com/cgi-bin/' \
+                'template/get_all_private_template'
         data = await self.getRequest(url)
         return data['template_list']

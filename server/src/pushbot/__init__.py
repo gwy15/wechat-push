@@ -1,3 +1,4 @@
+import logging
 import os
 import json
 import logging.config
@@ -11,6 +12,7 @@ from wechat.core import TokenManager
 from pushbot import models
 from pushbot import views
 
+
 def initLogger():
     configfile = os.environ.get('LOGGING_CONFIG', 'logging.json')
     if os.path.exists(configfile):
@@ -19,8 +21,8 @@ def initLogger():
         logging.config.dictConfig(config)
 
 
-import logging
 logger = logging.getLogger(__name__)
+
 
 def routes(urlRoot):
     return [
@@ -47,7 +49,8 @@ def createApp():
     # load url root
     URL_ROOT = os.environ.get('SERVER_API_ROOT', '/')
     if not (URL_ROOT.startswith('/') and URL_ROOT.endswith('/')):
-        raise ValueError('SERVER_API_ROOT must starts and ends with a slash (/).')
+        raise ValueError(
+            'SERVER_API_ROOT must starts and ends with a slash (/).')
     # load wechat message view url
     VUE_APP_ROOT_URL = os.environ.get('VUE_APP_ROOT_URL', None)
     if VUE_APP_ROOT_URL is None:
