@@ -1,6 +1,6 @@
 # Wechat-push
-[![Build Status](https://travis-ci.org/gwy15/wechat-push.svg?branch=master)](https://travis-ci.org/gwy15/wechat-push)
-![Python Version](https://img.shields.io/badge/python-3.6%20%7C%203.7-blue.svg)
+![Webpage CI](https://github.com/gwy15/wechat-push/workflows/Webpage%20CI/badge.svg)
+![Server CI](https://github.com/gwy15/wechat-push/workflows/Server%20CI/badge.svg)
 
 Wechat-push is a service that allows you push message to your smart phone using the Wechat MP platform.
 Wechat-push uses python/aiohttp as backend and Vue as frontend.
