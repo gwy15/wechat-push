@@ -15,7 +15,7 @@ class Message(Model):
     created_time = Column(REAL, index=True)
     ip = Column(String)  # use string for now
     UA = Column(String)
-    
+
     errcode = Column(Integer)
     msgid = Column(Integer)
 

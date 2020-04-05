@@ -1,10 +1,11 @@
 import asyncio
 import aiohttp
 import logging
-logger = logging.getLogger(__name__)
 
-from wechat.core.credential import AccessToken, TokenManager
+from wechat.core.credential import TokenManager
 from wechat.exceptions import WechatRequestError
+
+logger = logging.getLogger(__name__)
 
 
 class BaseRequest():
